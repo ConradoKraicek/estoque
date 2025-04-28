@@ -1,0 +1,75 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:13
+        env:
+          POSTGRES_DB: estoque
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checando o código
+        uses: actions/checkout@v3
+
+      - name: Cache de Dependências Maven
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Configurando JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Configurando Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker-compose -y
+
+      - name: Iniciando serviços com Docker Compose
+        run: docker-compose up -d
+
+      - name: Aguardando o banco de dados iniciar
+        run: |
+          until docker exec $(docker ps -qf "name=db") pg_isready; do sleep 1; done
+
+      - name: Compilando e Testando
+        run: mvn clean install -DskipTests
+
+      - name: Parando os serviços
+        if: always()
+        run: docker-compose down
+
+      - name: Arquivando Artefatos
+        uses: actions/upload-artifact@v3
+        with:
+          name: aplicativo-jar
+          path: target/*.jar
+
+      - name: Construindo a imagem Docker
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/estoque:${{ github.run_number }} .
+
+      - name: Logando no Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Enviando a imagem para o Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/estoque:${{ github.run_number }}
+

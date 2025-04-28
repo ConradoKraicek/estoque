@@ -29,8 +29,7 @@ public class EstoqueService {
         Produto produto = produtoRepository.findById(produtoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 
-        EstoqueFilial estoque = estoqueRepository.findByFilialAndProduto(filial, produto)
-                .orElse(new EstoqueFilial());
+        EstoqueFilial estoque = estoqueRepository.findByFilialAndProduto(filial, produto).orElse(new EstoqueFilial());
 
         if (estoque.getId() == null) {
             estoque.setFilial(filial);
@@ -61,8 +60,7 @@ public class EstoqueService {
             throw new IllegalArgumentException("Quantidade insuficiente no estoque da filial de origem");
         }
 
-        EstoqueFilial estoqueDestino = estoqueRepository.findByFilialAndProduto(filialDestino, produto)
-                .orElse(new EstoqueFilial());
+        EstoqueFilial estoqueDestino = estoqueRepository.findByFilialAndProduto(filialDestino, produto).orElse(new EstoqueFilial());
 
         if (estoqueDestino.getId() == null) {
             estoqueDestino.setFilial(filialDestino);

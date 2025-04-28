@@ -1,9 +1,15 @@
 package com.estoque.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EstoqueFilial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
