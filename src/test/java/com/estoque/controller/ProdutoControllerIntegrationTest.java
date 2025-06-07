@@ -1,6 +1,7 @@
 package com.estoque.controller;
 
-import com.estoque.model.Produto;
+import com.estoque.dto.CategoriaDTO;
+import com.estoque.dto.ProdutoDTO;
 import com.estoque.service.ProdutoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,19 @@ class ProdutoControllerIntegrationTest {
     @WithMockUser(roles = "ADMIN")
     void deveRetornarListaDeProdutos() throws Exception {
         // Arrange
-        List<Produto> produtos = Arrays.asList(
-                new Produto(1L, "Notebook", "Dell i7", 4500.00),
-                new Produto(2L, "Mouse", "Sem fio", 120.00)
+        List<ProdutoDTO> produtos = Arrays.asList(
+                ProdutoDTO.builder()
+                    .id(1L)
+                    .nome("Notebook")
+                    .descricao("Dell i7")
+                    .preco(4500.00)
+                    .build(),
+                ProdutoDTO.builder()
+                    .id(2L)
+                    .nome("Mouse")
+                    .descricao("Sem fio")
+                    .preco(120.00)
+                    .build()
         );
 
         when(produtoService.listarTodos()).thenReturn(produtos);
