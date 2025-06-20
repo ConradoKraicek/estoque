@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="produtos" language="java" pageWidth="595" pageHeight="842"
+    columnWidth="555" leftMargin="20" rightMargin="20"
+    topMargin="20" bottomMargin="20">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+    <!-- ESTILOS GERAIS -->
+    <style name="Title" forecolor="#0B3D91" fontName="Arial" fontSize="26.0" bold="true"/>
+    <style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18.0"/>
+	<style name="Column header" backcolor="#4F81BD" forecolor="#FFFFFF" mode="Opaque"
+		   fontName="Arial" fontSize="12.0" bold="true">
+		<box padding="4">
+			<pen lineWidth="1.0" lineColor="#1F497D" lineStyle="Solid"/>
+		</box>
+	</style>
+    <style name="Column header line" forecolor="#1F497D"/>
+	<style name="Detail" fontName="Arial" fontSize="12.0">
+		<box padding="2">
+			<pen lineWidth="0.5" lineColor="#E0E0E0"/>
+		</box>
+	</style>
+    <style name="Footer" fontName="Arial" fontSize="10.0" forecolor="#888888"/>
+    <!-- ESTILO PARA DETALHE ALTERNADO -->
+    <style name="DetailOdd" style="Detail" backcolor="#F2F2F2" mode="Opaque"/>
+
+    <field name="id" class="java.lang.Long"/>
+    <field name="nome" class="java.lang.String"/>
+    <field name="descricao" class="java.lang.String"/>
+    <field name="codigoBarras" class="java.lang.String"/>
+    <field name="preco" class="java.lang.Double"/>
+    <field name="categoria.nome" class="java.lang.String"/>
+    <field name="estoqueMinimo" class="java.lang.Integer"/>
+    <variable name="ROW_COUNT" class="java.lang.Integer" calculation="System"/>
+    <title>
+        <band height="70">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="50" style="Title"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Relatório de Produtos]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy HH:mm:ss">
+                <reportElement x="395" y="50" width="160" height="20" style="SubTitle"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="36">
+            <staticText>
+                <reportElement x="0" y="10" width="40" height="20" style="Column header"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[ID]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="40" y="10" width="100" height="20" style="Column header"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Nome]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="140" y="10" width="120" height="20" style="Column header"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Descrição]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="260" y="10" width="80" height="20" style="Column header"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Código]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="340" y="10" width="70" height="20" style="Column header"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Preço]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="410" y="10" width="80" height="20" style="Column header"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Categoria]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="490" y="10" width="65" height="20" style="Column header"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Est. Min.]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="35" width="555" height="1" style="Column header line"/>
+            </line>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="25">
+            <frame>
+                <reportElement x="0" y="0" width="555" height="25">
+                    <printWhenExpression><![CDATA[$V{ROW_COUNT} % 2 == 1]]></printWhenExpression>
+                </reportElement>
+                <!-- LINHA ZEBRADA (IMPAR - FUNDO) -->
+                <textField>
+                    <reportElement x="0" y="0" width="40" height="20" style="DetailOdd"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="40" y="0" width="100" height="20" style="DetailOdd"/>
+                    <textElement textAlignment="Left"/>
+                    <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="140" y="0" width="120" height="20" style="DetailOdd"/>
+                    <textElement textAlignment="Left"/>
+                    <textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="260" y="0" width="80" height="20" style="DetailOdd"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[$F{codigoBarras}]]></textFieldExpression>
+                </textField>
+                <textField pattern="¤ #,##0.00">
+                    <reportElement x="340" y="0" width="70" height="20" style="DetailOdd"/>
+                    <textElement textAlignment="Left"/>
+                    <textFieldExpression><![CDATA[$F{preco}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="410" y="0" width="80" height="20" style="DetailOdd"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[$F{categoria.nome}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="490" y="0" width="65" height="20" style="DetailOdd"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[$F{estoqueMinimo}]]></textFieldExpression>
+                </textField>
+            </frame>
+            <frame>
+                <reportElement x="0" y="0" width="555" height="25">
+                    <printWhenExpression><![CDATA[$V{ROW_COUNT} % 2 == 0]]></printWhenExpression>
+                </reportElement>
+                <!-- LINHA NORMAL (PAR - SEM FUNDO) -->
+                <textField>
+                    <reportElement x="0" y="0" width="40" height="20" style="Detail"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="40" y="0" width="100" height="20" style="Detail"/>
+                    <textElement textAlignment="Left"/>
+                    <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="140" y="0" width="120" height="20" style="Detail"/>
+                    <textElement textAlignment="Left"/>
+                    <textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="260" y="0" width="80" height="20" style="Detail"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[$F{codigoBarras}]]></textFieldExpression>
+                </textField>
+                <textField pattern="¤ #,##0.00">
+                    <reportElement x="340" y="0" width="70" height="20" style="Detail"/>
+                    <textElement textAlignment="Left"/>
+                    <textFieldExpression><![CDATA[$F{preco}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="410" y="0" width="80" height="20" style="Detail"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[$F{categoria.nome}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="490" y="0" width="65" height="20" style="Detail"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[$F{estoqueMinimo}]]></textFieldExpression>
+                </textField>
+            </frame>
+            <line>
+                <reportElement x="0" y="24" width="555" height="1" forecolor="#CCCCCC"/>
+            </line>
+        </band>
+    </detail>
+    <pageFooter>
+        <band height="20">
+            <textField>
+                <reportElement x="430" y="0" width="80" height="20" style="Footer"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement x="510" y="0" width="45" height="20" style="Footer"/>
+                <textElement textAlignment="Left"/>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+    <summary>
+        <band height="30">
+            <textField>
+                <reportElement x="0" y="5" width="555" height="20" style="SubTitle"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Total de Produtos: " + $V{REPORT_COUNT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>
