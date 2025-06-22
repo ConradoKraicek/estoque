@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport name="produtos" language="java" pageWidth="595" pageHeight="842"
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+    name="produtos" language="java" pageWidth="595" pageHeight="842"
     columnWidth="555" leftMargin="20" rightMargin="20"
-    topMargin="20" bottomMargin="20">
+    topMargin="20" bottomMargin="20" uuid="12345678-1234-1234-1234-123456789012">
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-    <!-- ESTILOS GERAIS -->
-    <style name="Title" forecolor="#0B3D91" fontName="Arial" fontSize="26.0" bold="true"/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+
+    <style name="Title" forecolor="#0B3D91" fontName="Arial" fontSize="26.0" isBold="true"/>
     <style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18.0"/>
-	<style name="Column header" backcolor="#4F81BD" forecolor="#FFFFFF" mode="Opaque"
-		   fontName="Arial" fontSize="12.0" bold="true">
-		<box padding="4">
-			<pen lineWidth="1.0" lineColor="#1F497D" lineStyle="Solid"/>
-		</box>
-	</style>
+    <style name="Column header" backcolor="#4F81BD" forecolor="#FFFFFF" mode="Opaque"
+           fontName="Arial" fontSize="12.0" isBold="true">
+        <box padding="4">
+            <pen lineWidth="1.0" lineColor="#1F497D" lineStyle="Solid"/>
+        </box>
+    </style>
     <style name="Column header line" forecolor="#1F497D"/>
-	<style name="Detail" fontName="Arial" fontSize="12.0">
-		<box padding="2">
-			<pen lineWidth="0.5" lineColor="#E0E0E0"/>
-		</box>
-	</style>
+    <style name="Detail" fontName="Arial" fontSize="12.0">
+        <box padding="2">
+            <pen lineWidth="0.5" lineColor="#E0E0E0"/>
+        </box>
+    </style>
     <style name="Footer" fontName="Arial" fontSize="10.0" forecolor="#888888"/>
-    <!-- ESTILO PARA DETALHE ALTERNADO -->
     <style name="DetailOdd" style="Detail" backcolor="#F2F2F2" mode="Opaque"/>
+
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
 
     <field name="id" class="java.lang.Long"/>
     <field name="nome" class="java.lang.String"/>
@@ -29,7 +37,9 @@
     <field name="preco" class="java.lang.Double"/>
     <field name="categoria.nome" class="java.lang.String"/>
     <field name="estoqueMinimo" class="java.lang.Integer"/>
-    <variable name="ROW_COUNT" class="java.lang.Integer" calculation="System"/>
+    <variable name="ROW_COUNT" class="java.lang.Integer" calculation="Count">
+        <variableExpression><![CDATA[Boolean.TRUE]]></variableExpression>
+    </variable>
     <title>
         <band height="70">
             <staticText>
