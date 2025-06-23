@@ -263,8 +263,7 @@ public class FilialServiceTest {
 
         // Assert
         verify(filialRepository).findById(1L);
-        // Note: This test detects a possible bug in the code -
-        // The service is calling save() instead of delete()
+
         verify(filialRepository).save(filial);
         verify(filialRepository, never()).delete(any(Filial.class));
     }
