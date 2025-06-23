@@ -11,16 +11,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CategoriaControllerTest {
+public class CategoriaControllerTest {
 
     @Mock
     private CategoriaService categoriaService;
@@ -29,15 +32,19 @@ class CategoriaControllerTest {
     private CategoriaController categoriaController;
 
     @Test
-    void listarTodosDeveRetornarListaDeCategorias() {
-        List<CategoriaDTO> categorias = List.of(
-            CategoriaDTO.builder().id(1L).nome("Categoria 1").build(),
-            CategoriaDTO.builder().id(2L).nome("Categoria 2").build()
+    void deveListarTodasAsCategorias() {
+        // Arrange
+        List<CategoriaDTO> categorias = Arrays.asList(
+                CategoriaDTO.builder().id(1L).nome("Eletrônicos").descricao("Produtos eletrônicos").build(),
+                CategoriaDTO.builder().id(2L).nome("Móveis").descricao("Móveis para casa").build()
         );
+
         when(categoriaService.listarTodos()).thenReturn(categorias);
 
+        // Act
         ResponseEntity<List<CategoriaDTO>> response = categoriaController.listarTodos();
 
+        // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
@@ -45,72 +52,93 @@ class CategoriaControllerTest {
     }
 
     @Test
-    void buscarPorIdDeveRetornarCategoriaQuandoIdExistir() {
-        CategoriaDTO categoriaDTO = CategoriaDTO.builder()
-            .id(1L)
-            .nome("Categoria Teste")
-            .descricao("Descrição teste")
-            .build();
-        when(categoriaService.buscarPorId(1L)).thenReturn(categoriaDTO);
+    void deveBuscarCategoriaPorId() {
+        // Arrange
+        Long id = 1L;
+        CategoriaDTO categoria = CategoriaDTO.builder()
+                .id(id)
+                .nome("Eletrônicos")
+                .descricao("Produtos eletrônicos")
+                .build();
 
-        ResponseEntity<CategoriaDTO> response = categoriaController.buscarPorId(1L);
+        when(categoriaService.buscarPorId(id)).thenReturn(categoria);
 
+        // Act
+        ResponseEntity<CategoriaDTO> response = categoriaController.buscarPorId(id);
+
+        // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1L, response.getBody().getId());
-        verify(categoriaService).buscarPorId(1L);
+        assertEquals(id, response.getBody().getId());
+        assertEquals("Eletrônicos", response.getBody().getNome());
+        verify(categoriaService).buscarPorId(id);
     }
 
     @Test
-    void salvarDeveRetornarCategoriaCriada() {
+    void deveSalvarCategoria() {
+        // Arrange
         CategoriaRequest request = new CategoriaRequest();
-        request.setNome("Eletrônicos");
-        request.setDescricao("Produtos eletrônicos");
+        request.setNome("Nova Categoria");
+        request.setDescricao("Descrição da nova categoria");
 
-        CategoriaDTO categoriaDTO = CategoriaDTO.builder()
-            .id(1L)
-            .nome("Eletrônicos")
-            .descricao("Produtos eletrônicos")
-            .build();
+        CategoriaDTO categoriaSalva = CategoriaDTO.builder()
+                .id(3L)
+                .nome("Nova Categoria")
+                .descricao("Descrição da nova categoria")
+                .build();
 
-        when(categoriaService.salvar(any(CategoriaRequest.class))).thenReturn(categoriaDTO);
+        when(categoriaService.salvar(any(CategoriaRequest.class))).thenReturn(categoriaSalva);
 
+        // Act
         ResponseEntity<CategoriaDTO> response = categoriaController.salvar(request);
 
+        // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Eletrônicos", response.getBody().getNome());
-        verify(categoriaService).salvar(any(CategoriaRequest.class));
+        assertEquals(3L, response.getBody().getId());
+        assertEquals("Nova Categoria", response.getBody().getNome());
+        verify(categoriaService).salvar(request);
     }
 
     @Test
-    void atualizarDeveRetornarCategoriaAtualizada() {
+    void deveAtualizarCategoria() {
+        // Arrange
+        Long id = 1L;
         CategoriaRequest request = new CategoriaRequest();
-        request.setNome("Atualizado");
+        request.setNome("Categoria Atualizada");
         request.setDescricao("Descrição atualizada");
 
-        CategoriaDTO categoriaDTO = CategoriaDTO.builder()
-            .id(1L)
-            .nome("Atualizado")
-            .descricao("Descrição atualizada")
-            .build();
+        CategoriaDTO categoriaAtualizada = CategoriaDTO.builder()
+                .id(id)
+                .nome("Categoria Atualizada")
+                .descricao("Descrição atualizada")
+                .build();
 
-        when(categoriaService.atualizar(eq(1L), any(CategoriaRequest.class))).thenReturn(categoriaDTO);
+        when(categoriaService.atualizar(eq(id), any(CategoriaRequest.class))).thenReturn(categoriaAtualizada);
 
-        ResponseEntity<CategoriaDTO> response = categoriaController.atualizar(1L, request);
+        // Act
+        ResponseEntity<CategoriaDTO> response = categoriaController.atualizar(id, request);
 
+        // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Atualizado", response.getBody().getNome());
-        verify(categoriaService).atualizar(eq(1L), any(CategoriaRequest.class));
+        assertEquals(id, response.getBody().getId());
+        assertEquals("Categoria Atualizada", response.getBody().getNome());
+        verify(categoriaService).atualizar(id, request);
     }
 
     @Test
-    void excluirDeveRetornarNoContent() {
-        ResponseEntity<Void> response = categoriaController.excluir(1L);
+    void deveExcluirCategoria() {
+        // Arrange
+        Long id = 1L;
+        doNothing().when(categoriaService).excluir(id);
 
+        // Act
+        ResponseEntity<Void> response = categoriaController.excluir(id);
+
+        // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(categoriaService).excluir(1L);
+        verify(categoriaService).excluir(id);
     }
 }
