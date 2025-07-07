@@ -23,6 +23,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoriaServiceTest {
@@ -39,36 +43,47 @@ public class CategoriaServiceTest {
     @Test
     void deveListarTodasAsCategorias() {
         // Arrange
+        Pageable pageable = PageRequest.of(0, 10);
+        
         Categoria categoria1 = new Categoria();
         categoria1.setId(1L);
         categoria1.setNome("Eletrônicos");
         categoria1.setDescricao("Produtos eletrônicos");
-
+        
         Categoria categoria2 = new Categoria();
         categoria2.setId(2L);
         categoria2.setNome("Móveis");
         categoria2.setDescricao("Móveis para casa");
-
+        
         List<Categoria> categorias = Arrays.asList(categoria1, categoria2);
-
-        List<CategoriaDTO> categoriasDTO = Arrays.asList(
-                CategoriaDTO.builder().id(1L).nome("Eletrônicos").descricao("Produtos eletrônicos").build(),
-                CategoriaDTO.builder().id(2L).nome("Móveis").descricao("Móveis para casa").build()
-        );
-
-        when(categoriaRepository.findAll()).thenReturn(categorias);
-        when(categoriaMapper.toDTO(categorias.get(0))).thenReturn(categoriasDTO.get(0));
-        when(categoriaMapper.toDTO(categorias.get(1))).thenReturn(categoriasDTO.get(1));
-
+        Page<Categoria> pageableCategorias = new PageImpl<>(categorias, pageable, categorias.size());
+        
+        CategoriaDTO categoriaDTO1 = CategoriaDTO.builder()
+                .id(1L)
+                .nome("Eletrônicos")
+                .descricao("Produtos eletrônicos")
+                .build();
+        
+        CategoriaDTO categoriaDTO2 = CategoriaDTO.builder()
+                .id(2L)
+                .nome("Móveis")
+                .descricao("Móveis para casa")
+                .build();
+        
+        when(categoriaRepository.findAll(any(Pageable.class))).thenReturn(pageableCategorias);
+        when(categoriaMapper.toDTO(categoria1)).thenReturn(categoriaDTO1);
+        when(categoriaMapper.toDTO(categoria2)).thenReturn(categoriaDTO2);
+        
         // Act
-        List<CategoriaDTO> resultado = categoriaService.listarTodos();
-
+        Page<CategoriaDTO> resultado = categoriaService.listarTodos(pageable);
+        
         // Assert
         assertNotNull(resultado);
-        assertEquals(2, resultado.size());
-        assertEquals("Eletrônicos", resultado.get(0).getNome());
-        assertEquals("Móveis", resultado.get(1).getNome());
-        verify(categoriaRepository).findAll();
+        assertEquals(2, resultado.getContent().size());
+        assertEquals(2, resultado.getTotalElements());
+        assertEquals("Eletrônicos", resultado.getContent().get(0).getNome());
+        assertEquals("Móveis", resultado.getContent().get(1).getNome());
+        verify(categoriaRepository).findAll(any(Pageable.class));
         verify(categoriaMapper, times(2)).toDTO(any(Categoria.class));
     }
 
