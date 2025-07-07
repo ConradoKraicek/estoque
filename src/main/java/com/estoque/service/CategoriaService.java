@@ -9,6 +9,8 @@ import com.estoque.mapper.CategoriaMapper;
 import com.estoque.model.Categoria;
 import com.estoque.repository.CategoriaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,11 +21,17 @@ public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
     private final CategoriaMapper categoriaMapper;
 
-    public List<CategoriaDTO> listarTodos() {
-        return categoriaRepository.findAll().stream()
-                .map(categoriaMapper::toDTO)
-                .collect(Collectors.toList());
+//    public Page<CategoriaDTO> listarTodos(Pageable pageable) {
+//        return (Page<CategoriaDTO>) categoriaRepository.findAll().stream()
+//                .map(categoriaMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }
+
+    public Page<CategoriaDTO> listarTodos(Pageable pageable) {
+        return categoriaRepository.findAll(pageable)
+                .map(categoriaMapper::toDTO);
     }
+
 
     public CategoriaDTO buscarPorId(Long id) {
         return categoriaMapper.toDTO(getCategoria(id));

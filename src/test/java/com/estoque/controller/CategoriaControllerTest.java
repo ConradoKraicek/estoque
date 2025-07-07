@@ -21,6 +21,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoriaControllerTest {
@@ -34,21 +38,21 @@ public class CategoriaControllerTest {
     @Test
     void deveListarTodasAsCategorias() {
         // Arrange
-        List<CategoriaDTO> categorias = Arrays.asList(
+        Page<CategoriaDTO> categorias = new PageImpl<>(Arrays.asList(
                 CategoriaDTO.builder().id(1L).nome("Eletrônicos").descricao("Produtos eletrônicos").build(),
                 CategoriaDTO.builder().id(2L).nome("Móveis").descricao("Móveis para casa").build()
-        );
-
-        when(categoriaService.listarTodos()).thenReturn(categorias);
-
+        ));
+    
+        when(categoriaService.listarTodos(any(Pageable.class))).thenReturn(categorias);
+    
         // Act
-        ResponseEntity<List<CategoriaDTO>> response = categoriaController.listarTodos();
-
+        ResponseEntity<Page<CategoriaDTO>> response = categoriaController.listarTodos(PageRequest.of(0, 10));
+    
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().size());
-        verify(categoriaService).listarTodos();
+        assertEquals(2, response.getBody().getContent().size());
+        verify(categoriaService).listarTodos(any(Pageable.class));
     }
 
     @Test
