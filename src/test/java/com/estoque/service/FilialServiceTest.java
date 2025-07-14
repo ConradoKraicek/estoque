@@ -263,8 +263,7 @@ public class FilialServiceTest {
 
         // Assert
         verify(filialRepository).findById(1L);
-
-        verify(filialRepository).save(filial);
-        verify(filialRepository, never()).delete(any(Filial.class));
+        verify(filialRepository).delete(filial);
+        verify(filialRepository, never()).save(any(Filial.class));
     }
 }
