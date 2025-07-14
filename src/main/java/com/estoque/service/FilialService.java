@@ -61,7 +61,7 @@ public class FilialService {
     @Transactional
     public void excluir(Long id) {
         Filial filial = getFilial(id);
-        filialRepository.save(filial);
+        filialRepository.delete(filial);
     }
 
     private Filial getFilial(Long id) {
